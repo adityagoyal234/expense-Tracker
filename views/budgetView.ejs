@@ -1,0 +1,95 @@
+<%- include('./includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/budget.css">
+    </head>
+
+    <body>
+        <%- include('./includes/navigation.ejs') %>
+            <div class="main-grid-container">
+                <h2>
+                    <%= budget.name %> Overview
+                </h2>
+                <div class="budgetOverview">
+                    <div class="budget">
+                        <div class="budget-text">
+                            <h3>
+                                <%= budget.name %>
+                            </h3>
+                            <p>
+                                <%=budget.initialAmount %> Budgeted
+                            </p>
+                        </div>
+                        <div class="budget-progress">
+                            <small>
+                                <%= budget.initialAmount - budget.remainingAmount %> Spent
+                            </small>
+                            <small>
+                                <%= budget.remainingAmount %> Remaining
+                            </small>
+                        </div>
+                        <div class="expand-budget">
+                            <form method="post" action="/deleteBudget">
+                                <button type="submit" style="background-color: red;">Delete Budget</button>
+                                <input type="hidden" name="budgetId" value="<%=budget._id %>">
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="form-container">
+                        <h3>Add Expense</h3>
+                        <form id="addingExpense" method="post" action="/add-expense/<%= budget._id %>">
+                            <div class="merge-flex">
+                                <div class="merge-grid">
+                                    <label for="expenseName">Expense Name:</label>
+                                    <input type="text" id="expenseName" name="expenseName" required>
+                                </div>
+                                <div class="merge-grid">
+                                    <label for="amount">Amount:</label>
+                                    <input type="number" id="amount" name="amount" required>
+                                </div>
+                                <input type="hidden" id="budgetCategory" name="budgetCategory"
+                                    value="<%= budget.name %>">
+                            </div>
+                            <br>
+                            <button id="add-expense" type="submit">Add Expense</button>
+                        </form>
+                    </div>
+                </div>
+                <h2>
+                    <%= budget.name %> Expenses
+                </h2>
+                <div class="budgetExpenses">
+                    <table>
+                        <tr>
+                            <th>Name</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th></th>
+                        </tr>
+                        <% for( let expense of expenses) { %>
+                            <tr>
+                                <td>
+                                    <%= expense.expenseName %>
+                                </td>
+                                <td>
+                                    <%= expense.amount %>
+                                </td>
+                                <td>
+                                    <%= expense.date.getDate() %>/<%= expense.date.getMonth()%>/<%=
+                                                expense.date.getFullYear() %>
+                                </td>
+                                <td>
+                                    <form action="/deleteExpense/<%= budget._id %>" , method="post">
+                                        <input type="hidden" value="<%= expense.budgetCategory %>"
+                                            name="expenseBudgetCategory">
+                                        <input type="hidden" value="<%= expense.amount %>" name="expenseAmount">
+                                        <input type="hidden" value="<%= expense._id %>" name="expenseId">
+                                        <button type="submit" style="background-color: red;">Remove Expense</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <% } %>
+                    </table>
+                </div>
+            </div>
+
+            <%- include('./includes/end.ejs') %>
